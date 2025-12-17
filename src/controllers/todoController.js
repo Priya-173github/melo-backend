@@ -2,12 +2,19 @@ import Todo from "../models/Todo.js";
 
 export const createTodo = async (req, res) => {
   try {
-    const { title, dueDate } = req.body;
+    const { title, description, dueDate } = req.body;
+
+    if (!title || !dueDate) {
+      return res.status(400).json({
+        message: "Title and dueDate are required",
+      });
+    }
 
     const todo = await Todo.create({
       userId: req.user._id,
       title,
-      dueDate: dueDate || null,
+      description: description || "",
+      dueDate: new Date(dueDate),
     });
 
     res.status(201).json(todo);
